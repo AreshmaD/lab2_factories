@@ -16,5 +16,8 @@
   },
   "finance": {
     "description": "Invoice, payment, receipt, budget, and bank"
+  },
+  "travel": {
+    "description": "Flights, hotels, booking, itinerary, trip, vacation"
   }
 }

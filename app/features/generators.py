@@ -3,6 +3,7 @@ from .base import BaseFeatureGenerator
 from app.dataclasses import Email
 from sentence_transformers import SentenceTransformer
 import numpy as np
+import re
 
 class SpamFeatureGenerator(BaseFeatureGenerator):
     """Generates spam detection features from email content"""
@@ -79,7 +80,7 @@ class EmailEmbeddingsFeatureGenerator(BaseFeatureGenerator):
 
         # Convert to list for JSON serialization
         embedding_list = embedding.tolist()
-
+        
         return {"average_embedding": embedding_list}
 
     @property
@@ -103,6 +104,21 @@ class RawEmailFeatureGenerator(BaseFeatureGenerator):
     @property
     def feature_names(self) -> list[str]:
         return ["email_subject", "email_body"]
+        
+        
+class NonTextCharacterFeatureGenerator(BaseFeatureGenerator):
+    """Counts non-alphanumeric characters in subject + body"""
+    
+    def generate_features(self, email:Email) -> Dict[str, Any]:
+        text = f"{email.subject}{email.body}"
+        count = len(re.findall(r"[^a-zA-Z0-9]", text))
+        return {"non_text_char_count": count}
+        
+        
+    @property
+    def feature_names(self) -> list[str]:
+        return ["non_text_char_count"]
+    
 
 # TODO: Lab Assignment - Part 0 of 2
 # Extend the embedding feature generator to include the email body as well as the subject

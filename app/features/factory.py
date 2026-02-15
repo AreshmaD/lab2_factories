@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 from .base import BaseFeatureGenerator
-from .generators import SpamFeatureGenerator, AverageWordLengthFeatureGenerator, EmailEmbeddingsFeatureGenerator, RawEmailFeatureGenerator
+from .generators import SpamFeatureGenerator, AverageWordLengthFeatureGenerator, EmailEmbeddingsFeatureGenerator, RawEmailFeatureGenerator, NonTextCharacterFeatureGenerator
 from app.dataclasses import Email
 
 # Constant list of available generators
@@ -8,7 +8,8 @@ GENERATORS = {
     "spam": SpamFeatureGenerator,
     "word_length": AverageWordLengthFeatureGenerator,
     "email_embeddings": EmailEmbeddingsFeatureGenerator,
-    "raw_email": RawEmailFeatureGenerator
+    "raw_email": RawEmailFeatureGenerator,
+    "non_text": NonTextCharacterFeatureGenerator
 }
 
 class FeatureGeneratorFactory:
