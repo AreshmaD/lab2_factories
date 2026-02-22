@@ -32,12 +32,12 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 ### 1. View Available Topics
 ```bash
-curl http://YOUR_EC2_PUBLIC_IP:8000/topics
+curl http://YOUR_EC2_PUBLIC_IP:8000/api/v1/topics
 ```
 
 ### 2. Classify an Email
 ```bash
-curl -X POST "http://YOUR_EC2_PUBLIC_IP:8000/emails/classify" \
+curl -X POST "http://YOUR_EC2_PUBLIC_IP:8000/api/v1/emails/classify" \
   -H "Content-Type: application/json" \
   -d '{
     "subject": "Meeting tomorrow at 2pm",
@@ -47,7 +47,7 @@ curl -X POST "http://YOUR_EC2_PUBLIC_IP:8000/emails/classify" \
 
 ### 3. Get Pipeline Information
 ```bash
-curl http://YOUR_EC2_PUBLIC_IP:8000/pipeline/info
+curl http://YOUR_EC2_PUBLIC_IP:8000/api/v1/pipeline/info
 ```
 
 ### 4. Interactive API Documentation
