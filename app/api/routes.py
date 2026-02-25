@@ -47,7 +47,7 @@ async def classify_email(request: EmailRequest, mode: str = Query("topic")):
     try:
         inference_service = EmailTopicInferenceService()
         email = Email(subject=request.subject, body=request.body)
-        ## topic classification
+        ## mode = topic 
         if mode == "topic":
             result = inference_service.classify_email(email)
             return EmailClassificationResponse(
@@ -57,23 +57,33 @@ async def classify_email(request: EmailRequest, mode: str = Query("topic")):
                 available_topics=result["available_topics"],
             )
         
-        ## stored email classification to nearest
+        ## mode = email stored email classification to nearest
         if mode == "email":
             # computinf embedding for incoming email using existing pipeline
             incoming = inference_service.classify_email(email)
             incoming_vec = np.array(incoming["features"]["email_embeddings_average_embedding"], dtype=float)
             
             # loading stored emails from the JSON file
-            stored = json.loads(EMAILS_FILE.read_text()) if EMAILS_FILE.exists() else []
+            stored_all = json.loads(EMAILS_FILE.read_text()) if EMAILS_FILE.exists() else []
+            
+            # using only stored emails that have real ground_truth label
+            stored =[
+                s for s in stored_all
+                if isinstance(s, dict)
+                and isinstance(s.get("ground_truth"), str)
+                and s["ground_truth"].strip() != ""
+            ]
+            
+            # ensuring at least 1 labeled email exists
             if len(stored) == 0:
-                raise HTTPException(status_code=400, detail="No stored emails available for mode=email")
+                raise HTTPException(status_code=400, detail="No labeled stored emails with ground_truth available for mode=email")
 
             best = None
             best_sim = -1.0
             
-            # Comparing to each stored email
+            # Comparing to each stored labeled email
             for s in stored:
-                s_email = Email(subject=s["subject"], body=s["body"])
+                s_email = Email(subject=s("subject",""), body=s("body",""))
                 s_result = inference_service.classify_email(s_email)
                 s_vec = np.array(s_result["features"]["email_embeddings_average_embedding"], dtype=float)
 
@@ -84,9 +94,9 @@ async def classify_email(request: EmailRequest, mode: str = Query("topic")):
                     best_sim = sim
                     best = s
 
-            predicted = best.get("ground_truth") or "unknown"
+            predicted = best["ground_truth"].strip()
 
-            # Return in same response model (topic_scores not meaningful here)
+            # Return in same response model 
             return EmailClassificationResponse(
                 predicted_topic=predicted,
                 topic_scores={"nearest_email_similarity": best_sim},

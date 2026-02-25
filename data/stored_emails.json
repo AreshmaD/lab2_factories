@@ -1,16 +1,1 @@
-[
-  {
-    "id": "9f496dd4-fcb1-4db6-be82-813ce9631d0d",
-    "subject": "Invoice due",
-    "body": "Please pay invoice #123 by Friday.",
-    "ground_truth": "finance",
-    "created_at": "2026-02-15T21:20:53.043658Z"
-  },
-  {
-    "id": "b3d2bf77-3db6-4c19-9ea5-83595ff96398",
-    "subject": "Invoice Due",
-    "body": "Please pay invoice #345 by Saturday. Receipt will be sent after payment. Thank you!",
-    "ground_truth": "finance",
-    "created_at": "2026-02-15T21:58:48.414082Z"
-  }
-]
+[]
